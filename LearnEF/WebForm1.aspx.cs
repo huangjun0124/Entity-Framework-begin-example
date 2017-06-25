@@ -20,6 +20,7 @@ namespace LearnEF
 
         private void ReloadData()
         {
+            int SelectedEmpID = string.IsNullOrEmpty(ddlEmployee.SelectedValue) ? -1 : int.Parse(ddlEmployee.SelectedValue);
             LearnEFEntities db = new LearnEFEntities();
 
             var empQuery = from emp in db.Employees
@@ -29,7 +30,7 @@ namespace LearnEF
             ddlEmployee.DataValueField = "EmpId";
             ddlEmployee.DataTextField = "FirstName";
             ddlEmployee.DataBind();
-
+            
             ddlEmployee.Items.Insert(0, new ListItem("--Add New--", "0"));
             var selected = from emp in empList
                            where emp.EmpId== SelectedEmpID
@@ -45,6 +46,7 @@ namespace LearnEF
 
         protected void btUpdate_Click(object sender, EventArgs e)
         {
+            int SelectedEmpID = string.IsNullOrEmpty(ddlEmployee.SelectedValue) ? -1 : int.Parse(ddlEmployee.SelectedValue);
             //Read the record from the database.
             LearnEFEntities db = new LearnEFEntities();
             //following query will fetch a record based upon the EmpID passed through local variable empId
@@ -71,12 +73,13 @@ namespace LearnEF
 
             //save your changes into the database
             db.SaveChanges();
-            SelectedEmpID = objEmp.EmpId;
             ReloadData();
+            ddlEmployee.SelectedValue = objEmp.EmpId.ToString();
         }
 
         protected void btnDelete_Click(object sender, EventArgs e)
-        { 
+        {
+            int SelectedEmpID = string.IsNullOrEmpty(ddlEmployee.SelectedValue) ? -1 : int.Parse(ddlEmployee.SelectedValue);
             LearnEFEntities db = new LearnEFEntities();
             var empQuery = from emp in db.Employees
                            where emp.EmpId == SelectedEmpID
@@ -97,12 +100,17 @@ namespace LearnEF
             //save changes
             db.SaveChanges();
             ReloadData();
+            txtHREmpID.Text = "";
+            txtFirstName.Text = "";
+            txtLastName.Text = "";
+            txtAddress.Text = "";
+            txtCity.Text = "";
         }
 
-        private int SelectedEmpID = -1;
+
         protected void ddlEmployee_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SelectedEmpID = string.IsNullOrEmpty(ddlEmployee.SelectedValue) ? -1 : int.Parse(ddlEmployee.SelectedValue);
+            int SelectedEmpID = string.IsNullOrEmpty(ddlEmployee.SelectedValue) ? -1 : int.Parse(ddlEmployee.SelectedValue);
             LearnEFEntities db = new LearnEFEntities();
             var empQuery = from emp in db.Employees
                            where emp.EmpId == SelectedEmpID
